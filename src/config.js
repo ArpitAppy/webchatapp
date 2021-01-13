@@ -1,10 +1,10 @@
 const _env = process.env.AV_WEB_ENV;
 const DEV_HOST = "http://localhost:8080";
-const STAGING_HOST = "http://localhost:8080";
+const STAGING_HOST = "https://onlinechatapp123.herokuapp.com";
 const PRODUCTION_HOST = "http://localhost:8080";
 
 const getURL = function () {
-  let _url = DEV_HOST;
+  let _url = STAGING_HOST;
   switch (_env) {
     case "dev":
       _url = DEV_HOST;
