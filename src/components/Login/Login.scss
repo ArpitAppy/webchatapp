@@ -1,0 +1,18 @@
+@import '../Common/Common.scss';
+
+.login {
+    height: 100vh;
+    &--container {
+        height: 100%;
+    }
+
+    &--content {
+        padding: 40px;
+        background-color: whitesmoke;
+        border-radius: 10px;
+    }
+}
+
+.form-group {
+    margin-bottom: 20px;
+}

@@ -1,0 +1,15 @@
+@import '../Common/Common.scss';
+
+.main-container {
+    display: grid;
+    height: 90vh;
+    place-items: center;
+    background-color: gainsboro;
+    &--inner {
+        background-color: whitesmoke;
+        margin-top: -50px;
+        height: 80vh;
+        width: 80vw;
+        box-shadow: -1px 4px 20px -6px rgba(0, 0, 0, 0.75);
+    }
+}

@@ -1,0 +1,22 @@
+.chat-content-layout {
+    height: 90vh;
+}
+
+.chat-input {
+    width: 80vw;
+    padding: 10px;
+}
+
+.chat-message-input {
+    padding: 15px;
+    border: 1px solid currentColor;
+    border-radius: 40px;
+    width: 60vw;
+}
+
+.chat-message-input:focus {
+    outline: none;
+}
+.chat-content {
+    height: 80vh;
+}

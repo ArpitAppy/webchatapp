@@ -1,24 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { AuthContext } from './contexts/Auth';
+import Routes from './components/Routes';
+import { getItemFromLS, setItemInLS } from './utils/helpers/localStorage';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
+
+  const existingTokens = getItemFromLS("token");
+  const [authTokens, setAuthTokens] = useState(existingTokens);
+
+  const setTokens = (data) => {
+    setItemInLS("token", data);
+    setAuthTokens(data);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthContext.Provider value={{ authTokens, setAuthTokens: setTokens }}>
+      <Router>
+        <Routes />
+      </Router>
+    </AuthContext.Provider>
   );
 }
 

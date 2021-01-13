@@ -1,0 +1,79 @@
+@import '../Common/Common.scss';
+
+.chatbar {
+    flex: 0.65;
+
+    &--header {
+        padding-left: 20px;
+    }
+
+    &--content {
+        flex: 1;
+        background-color: lightgray;
+        padding: 30px;
+        overflow: scroll;
+        height: 62vh;
+        background-position: center;
+        background-repeat: repeat;
+
+        &--sender {
+            position: relative;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgb(4, 128, 165);
+            margin-bottom: 30px;
+            width: fit-content;
+            margin-left: auto;
+        }
+
+        &--receiver {
+            background-color: white;
+            position: relative;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            width: fit-content;
+        }
+
+        &--time {
+            font-size: 8px;
+            margin-left: 10px;
+        }
+
+        &--name {
+            top: -15px;
+            font-weight: 800;
+            font-size: 8px;
+            position: absolute;
+        }
+
+        &--status {
+            bottom: -30px;
+            right: -2px;
+            font-size: 6px;
+            position: absolute;
+            padding: 5px;
+        }
+    }
+
+    &--bottom {
+        height: 60px;
+        border-top: 1px solid lightgreen;
+        padding: 0px 10px;
+
+        form {
+            flex: 1;
+            input {
+                padding: 10px;
+                border-radius: 30px;
+                flex: 1;
+                border: none;
+            }
+            button {
+                display: none;
+            }
+        }
+    }
+}
