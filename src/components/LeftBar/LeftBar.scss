@@ -36,16 +36,16 @@
         padding: 20px;
         border-bottom: 1px solid lightgreen;
 
-        &:hover {
-            background-color: whitesmoke;
-        }
-
         &--selected {
             color: green;
+            background: #d4e2bd;
         }
 
         &--nonselected {
             color: black;
+            &:hover {
+                background-color: whitesmoke;
+            }
         }
     }
 }

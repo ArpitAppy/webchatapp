@@ -1,15 +1,18 @@
 import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import React, { useReducer, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import logo from '../../assets/images/logo-black.png';
 import { APIS } from '../../utils/apis/endpoint';
 import { setItemInLS } from '../../utils/helpers/localStorage';
+import { setNewUserDetails } from '../../redux/actions';
 import './Login.scss';
 
 const LoginForm = () => {
 
     const history = useHistory();
+    const dispatch = useDispatch();
     const reducer = (state, newState) => ({ ...state, ...newState });
     const [loginDetails, setLoginDetails] = useReducer(reducer, {
         emailAddress: "",
@@ -24,10 +27,21 @@ const LoginForm = () => {
     const onSubmit = (e) => {
         e.preventDefault();
         axios.post(APIS._login, loginDetails)
-        .then(res => {
+        .then(async res => {
             if (res && res.data && res.data.success){
-                setItemInLS("token", res.data.data.token);
-                history.replace('/')
+                const { user } = res.data.data;
+                await setItemInLS("token", res.data.data.token);
+                await dispatch(
+                    setNewUserDetails({
+                      fullName: user.fullName,
+                      emailAddress: user.emailAddress,
+                      mobileNumber: user.mobileNumber,
+                      password: user.password,
+                    })
+                  );
+                setTimeout(() => {
+                    history.replace('/')
+                }, 5000)
             }
         })
         .catch(err => {
@@ -85,6 +99,7 @@ const LoginForm = () => {
 const SignUpForm = () => {
 
     const history = useHistory();
+    const dispatch = useDispatch();
     const reducer = (state, newState) => ({ ...state, ...newState });
     const [userDetails, setUserDetails] = useReducer(reducer, {
         fullName: "",
@@ -93,7 +108,7 @@ const SignUpForm = () => {
         mobileNumber: ""
     });
 
-    // const { fullName, emailAddress, password, mobileNumber } = userDetails;
+    const { fullName, emailAddress, password, mobileNumber } = userDetails;
 
     const onChange = (e) => {
         const {name, value} = e.target;
@@ -102,11 +117,21 @@ const SignUpForm = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        dispatch(
+            setNewUserDetails({
+              fullName,
+              emailAddress,
+              mobileNumber,
+              password,
+            })
+          );
         axios.post(APIS._registration, userDetails)
-        .then(res => {
+        .then(async res => {
             if (res && res.data && res.data.success){
-                setItemInLS("token", res.data.data.token);
-                history.push('/')
+                await setItemInLS("token", res.data.data.token);
+                setTimeout(() => {
+                    history.replace('/')
+                }, 4000)
             }
         })
         .catch(err => {

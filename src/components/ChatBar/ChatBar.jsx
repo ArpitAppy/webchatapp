@@ -4,19 +4,26 @@ import React, { useState } from 'react';
 import { APIS } from '../../utils/apis/endpoint';
 import CheckIcon from '@material-ui/icons/Check';
 import './ChatBar.scss';
+import { useSelector } from 'react-redux';
+import { getItemFromLS } from '../../utils/helpers/localStorage';
+import jwt_decode from 'jwt-decode';
 
 const ChatBar = ({ messages }) => {
 
     const [text, setText] = useState('');
+    const chatroomDetails = useSelector((state) => state.chatroomDetails)
+    const { name } = jwt_decode(getItemFromLS('token'));
+    const chatroom = getItemFromLS('chatroom')
 
     const sendMessage = async (e) => {
         e.preventDefault();
         await axios.post(APIS._newMessage, {
-            user: 'Arpit',
+            user: name,
             message: text,
+            chatroom: chatroom,
             timestamp: new Date().toUTCString(),
-            receiver: true,
-            read: true
+            receiver: false,
+            read: false
         })
 
         setText('')
@@ -26,7 +33,7 @@ const ChatBar = ({ messages }) => {
         <div className="chatbar">
             <div className="chatbar--header flex flex-align-center">
                 <Avatar />
-                <h3>Arpit Agarwal</h3>
+                <h3>{chatroomDetails.name || chatroom || ''}</h3>
             </div>
             <div className="chatbar--content">
                 {
@@ -41,7 +48,16 @@ const ChatBar = ({ messages }) => {
                                 {
                                     !msg.receiver &&
                                     <span className="chatbar--content--status">
-                                        {msg.read ? <><CheckIcon /><CheckIcon /></> : <CheckIcon /> }
+                                        { 
+                                            msg.read ? 
+                                                <div className="chatbar--content--status--received">
+                                                    <CheckIcon /><CheckIcon />
+                                                </div> 
+                                                : 
+                                                <div className="chatbar--content--status--sent">
+                                                    <CheckIcon />
+                                                </div> 
+                                        }
                                     </span>
                                 }
                             </p>

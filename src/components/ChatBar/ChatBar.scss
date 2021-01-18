@@ -55,6 +55,15 @@
             font-size: 6px;
             position: absolute;
             padding: 5px;
+            color: rgb(61, 59, 59);
+
+            &--sent  {
+                color: yellow;
+            }
+
+            &--received {
+                color: blue;
+            }
         }
     }
 
