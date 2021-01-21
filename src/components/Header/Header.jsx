@@ -11,6 +11,8 @@ const Header = () => {
 
     const logout = () => {
         deleteItemFromLS('token')
+        deleteItemFromLS('chatroom')
+        deleteItemFromLS('toUser')
         global.location.reload();
     }
 
