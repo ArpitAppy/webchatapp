@@ -36,7 +36,7 @@ const LoginForm = () => {
                 const { user } = res.data.data;
                 await setItemInLS("token", res.data.data.token);
                 await setLoading(false)
-                await history.replace('/')
+                window.location.href = '/'
             }
         })
         .catch(err => {
@@ -129,7 +129,7 @@ const SignUpForm = () => {
             if (res && res.data && res.data.success){
                 await setItemInLS("token", res.data.data.token);
                 await setLoading(false)
-                await history.replace('/')
+                window.location.href = '/'
             }
         })
         .catch(err => {

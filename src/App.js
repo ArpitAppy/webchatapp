@@ -6,7 +6,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 function App() {
 
-  const existingTokens = getItemFromLS("token");
+  const existingTokens = getItemFromLS('token');
   const [authTokens, setAuthTokens] = useState(existingTokens);
 
   const setTokens = (data) => {

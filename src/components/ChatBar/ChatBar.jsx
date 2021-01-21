@@ -1,6 +1,6 @@
 import { Avatar } from '@material-ui/core';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { APIS } from '../../utils/apis/endpoint';
 import CheckIcon from '@material-ui/icons/Check';
 import './ChatBar.scss';
@@ -21,6 +21,7 @@ const ChatBar = ({ messages, socket }) => {
     const chatroom = getItemFromLS('chatroom')
     const toUser = getItemFromLS('toUser');
     const [senderName, setSenderName] = useState('')
+    const messageRef = useRef()
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -40,6 +41,7 @@ const ChatBar = ({ messages, socket }) => {
         socket.emit('message', {chatroom, text})
         socket.on('sendMessage', (data) => {
             console.log('mesage sent')
+            window.location.reload()
         })
     }
 
@@ -54,11 +56,15 @@ const ChatBar = ({ messages, socket }) => {
             setTyping(data.status)
             setSenderName(data.username)
         })
-        socket.emit('markAsSeen', chatroom)
-        socket.on('markAsRead', (data) => {
-            console.log('we', data.message)
-        })
       }, [text]);
+
+      useEffect(() => {
+        // scroll to end
+        messageRef.current.addEventListener('DOMNodeInserted', event => {
+            const { currentTarget: target } = event;
+            target.scroll({ top: target.scrollHeight, behavior: 'smooth' });
+          });
+      })
 
     return (
         <div className="chatbar">
@@ -72,11 +78,11 @@ const ChatBar = ({ messages, socket }) => {
                 </div>
                 
             </div>
-            <div className="chatbar--content">
+            <div className="chatbar--content" ref={messageRef}>
                 {
                     messages && messages.map((msg, index) => {
                         return (
-                            <p className={`${msg.from === name ? 'chatbar--content--sender' : 'chatbar--content--receiver'} `}>
+                            <p className={`${msg.from === undefined ? 'chatbar--content--sender' : (`${msg.from === name ? 'chatbar--content--sender': 'chatbar--content--receiver'}`)} `}>
                                 <span className="chatbar--content--name">{msg.user}</span>
                                 {msg.message}
                                 <span className="chatbar--content--time">
@@ -87,6 +93,14 @@ const ChatBar = ({ messages, socket }) => {
                                     <span className="chatbar--content--status">
                                         <div className="chatbar--content--status--sent">
                                             {msg.sent ? (msg.read ? <><CheckIcon /><CheckIcon /></> : <CheckIcon />) : <small>not sent</small> }
+                                        </div> 
+                                    </span>
+                                }
+                                {   
+                                    msg.from === undefined &&
+                                    <span className="chatbar--content--status">
+                                        <div className="chatbar--content--status--sent">
+                                            <CheckIcon />
                                         </div> 
                                     </span>
                                 }

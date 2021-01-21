@@ -28,11 +28,15 @@ const LeftBarUsers = ({ user, socket }) => {
             .then(async res => {
                 if (res && res.data && res.data.success) {
                     console.log(res.data.data)
-                    setItemInLS('chatroom', res.data.data.chatroom.name)
+                    await setItemInLS('chatroom', res.data.data.chatroom.name)
                     setItemInLS('toUser', user.fullName)
                     await axios.post(APIS._updateReadStatus, {chatroom})
                     .then(res => {
                         if (res && res.data && res.data.success) {
+                            socket.emit('markAsRead', chatroom)
+                            socket.on('markAsSeen', (data) => {
+                                window.location.reload()
+                            })
                             window.location.reload()
                         }
                     })
