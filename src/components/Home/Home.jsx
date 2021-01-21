@@ -11,7 +11,7 @@ import jwt_decode from 'jwt-decode';
 import { io } from 'socket.io-client';
 import { URL } from '../../config';
 
-let endpoint = URL;
+let endpoint = 'https://onlinechatapp123.herokuapp.com';
 const socket = io(endpoint)
 
 const Home = () => {
