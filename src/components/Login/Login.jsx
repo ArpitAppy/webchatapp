@@ -2,12 +2,13 @@ import { Button, TextField } from '@material-ui/core';
 import axios from 'axios';
 import React, { useReducer, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 import logo from '../../assets/images/logo-black.png';
 import { APIS } from '../../utils/apis/endpoint';
 import { setItemInLS } from '../../utils/helpers/localStorage';
 import { setNewUserDetails } from '../../redux/actions';
 import './Login.scss';
+import Loader from '../Loader';
 
 const LoginForm = () => {
 
@@ -19,6 +20,8 @@ const LoginForm = () => {
         password: "",
     });
 
+    const [isLoading, setLoading] = useState(false);
+
     const onChange = (e) => {
         const {name, value} = e.target;
         setLoginDetails({ [name] : value})
@@ -26,25 +29,18 @@ const LoginForm = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        setLoading(true)
         axios.post(APIS._login, loginDetails)
         .then(async res => {
             if (res && res.data && res.data.success){
                 const { user } = res.data.data;
                 await setItemInLS("token", res.data.data.token);
-                await dispatch(
-                    setNewUserDetails({
-                      fullName: user.fullName,
-                      emailAddress: user.emailAddress,
-                      mobileNumber: user.mobileNumber,
-                      password: user.password,
-                    })
-                  );
-                setTimeout(() => {
-                    history.replace('/')
-                }, 5000)
+                await setLoading(false)
+                await history.replace('/')
             }
         })
         .catch(err => {
+            setLoading(false)
             console.log(err)
         })
     }    
@@ -92,6 +88,7 @@ const LoginForm = () => {
                     </div>
                 </div>
             </form>
+            {isLoading && <Loader />}
         </>
     )
 };
@@ -101,6 +98,7 @@ const SignUpForm = () => {
     const history = useHistory();
     const dispatch = useDispatch();
     const reducer = (state, newState) => ({ ...state, ...newState });
+    const [isLoading, setLoading] = useState(false);
     const [userDetails, setUserDetails] = useReducer(reducer, {
         fullName: "",
         emailAddress: "",
@@ -117,6 +115,7 @@ const SignUpForm = () => {
 
     const onSubmit = (e) => {
         e.preventDefault();
+        setLoading(true)
         dispatch(
             setNewUserDetails({
               fullName,
@@ -129,12 +128,12 @@ const SignUpForm = () => {
         .then(async res => {
             if (res && res.data && res.data.success){
                 await setItemInLS("token", res.data.data.token);
-                setTimeout(() => {
-                    history.replace('/')
-                }, 4000)
+                await setLoading(false)
+                await history.replace('/')
             }
         })
         .catch(err => {
+            setLoading(false)
             console.log(err)
         })
     }
@@ -214,6 +213,7 @@ const SignUpForm = () => {
                     </div>
                 </div>
             </form>
+            {isLoading && <Loader />}
         </>
     )
 }

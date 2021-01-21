@@ -6,11 +6,13 @@ import './Home.scss';
 import Pusher from 'pusher-js';
 import axios from 'axios';
 import { APIS } from '../../utils/apis/endpoint';
-import io from 'socket.io-client';
 import { getItemFromLS } from '../../utils/helpers/localStorage';
 import jwt_decode from 'jwt-decode';
+import { io } from 'socket.io-client';
+import { URL } from '../../config';
 
-let endpoint = 'http://localhost:8080';
+let endpoint = URL;
+const socket = io(endpoint)
 
 const Home = () => {
 
@@ -20,17 +22,17 @@ const Home = () => {
     const {name} = jwt_decode(getItemFromLS('token'))
     const chatroom = getItemFromLS('chatroom');
 
-    useEffect(() => {
-        axios.get(APIS._getMessages)
-        .then(res => {
-            if (res && res.data && res.data.success) {
-                setMessages(res.data.data)
-            }
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    }, [])
+    // useEffect(() => {
+    //     axios.get(APIS._getMessages)
+    //     .then(res => {
+    //         if (res && res.data && res.data.success) {
+    //             setMessages(res.data.data)
+    //         }
+    //     })
+    //     .catch(err => {
+    //         console.log(err)
+    //     })
+    // }, [])
 
     useEffect(() => {
         axios.get(APIS._getAllUsers)
@@ -62,22 +64,28 @@ const Home = () => {
       }, [messages])
 
       useEffect(() => {
-        const socket = io(endpoint); 
-        socket.emit('join', { name, chatroom }, (error) => {
-            if (error) {
-                alert(error)
-                window.location.href = '/'
+          fetchMessage(chatroom)
+      }, [chatroom])
+
+      const fetchMessage = (chatroom) => {
+        axios.get(`${APIS._getMessagesForChatroom}?chatroom=${chatroom}`)
+        .then(res => {
+            if (res && res.data && res.data.success) {
+                setMessages(res.data.data)
             }
         })
-      }, []);
+        .catch(err => {
+            console.log(err)
+        })
+    }
 
     return (
         <>
             <Header />
             <div className="main-container">
                 <div className="main-container--inner flex">
-                    <LeftBar users={users} />
-                    <ChatBar messages={messages} />
+                    <LeftBar users={users} socket={socket} />
+                    <ChatBar messages={messages} socket={socket} />
                 </div>
             </div>
         </>

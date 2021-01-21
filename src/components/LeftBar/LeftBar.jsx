@@ -6,9 +6,10 @@ import LeftBarUsers from './LeftBarUsers';
 import jwt_decode from 'jwt-decode';
 import { getItemFromLS } from '../../utils/helpers/localStorage';
 
-const LeftBar = ({ users }) => {
+const LeftBar = ({ users, socket }) => {
 
-    const { name } = jwt_decode(getItemFromLS('token'));
+    // const { name } = jwt_decode(getItemFromLS('token'));
+    const userDetails = useSelector(state => state.userDetails)
     const [searchText, setSearchText] = useState('');
 
     const searchFilter = (e) => {
@@ -21,18 +22,19 @@ const LeftBar = ({ users }) => {
     return (
         <div className="leftbar flex flex-column">
             <div className="leftbar--header">
-                {name}
+                {console.log(userDetails)}
+                {userDetails.fullName}
             </div>
             <div className="leftbar--search flex flex-align-center">
                 <div className="leftbar--search--input flex flex-align-center">
                     <SearchOutlined />
-                    <input type="text" placeholder="Search User..." onChange={searchFilter} />
+                    <input type="text" placeholder="Search User" onChange={searchFilter} />
                 </div>
             </div>
             <div className="leftbar--user">
                 {
                     filteredUser && filteredUser.map(user => {
-                        return <LeftBarUsers user={user} />
+                        return <LeftBarUsers user={user} socket={socket} />
                     })
                 }
             </div>
