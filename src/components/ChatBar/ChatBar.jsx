@@ -36,12 +36,18 @@ const ChatBar = ({ messages, socket }) => {
             sent: true,
             read: false
         })
-
-        setText('')
-        socket.emit('message', {chatroom, text})
-        socket.on('sendMessage', (data) => {
-            console.log('mesage sent')
-            window.location.reload()
+        .then(res => {
+            if (res && res.data && res.data.success) {
+                setText('')
+                socket.emit('message', {chatroom, text})
+                socket.on('sendMessage', (data) => {
+                    console.log('mesage sent')
+                    window.location.reload()
+                })
+            }
+        })
+        .catch(err => {
+            console.log(err)
         })
     }
 
@@ -67,14 +73,14 @@ const ChatBar = ({ messages, socket }) => {
       })
 
     return (
-        <div className="chatbar">
+        <div className="chatbar flex flex-column">
             <div className="chatbar--header flex flex-column">
                 <div className="flex flex-align-center">
                     <Avatar />
                     <h3>{chatroomDetails.name || chatroom || ''}</h3>
                 </div>
-                <div className="flex, flex-align-center">
-                    {isTyping && senderName && `${senderName} typing...`}
+                <div className="flex flex-align-center">
+                    {isTyping && senderName && <h5>{senderName} typing...</h5>}
                 </div>
                 
             </div>
@@ -82,7 +88,7 @@ const ChatBar = ({ messages, socket }) => {
                 {
                     messages && messages.map((msg, index) => {
                         return (
-                            <p className={`${msg.from === undefined ? 'chatbar--content--sender' : (`${msg.from === name ? 'chatbar--content--sender': 'chatbar--content--receiver'}`)} `}>
+                            <p className={`${msg.from === undefined || name === senderName ? 'chatbar--content--sender' : (`${msg.from === name ? 'chatbar--content--sender': 'chatbar--content--receiver'}`)} `}>
                                 <span className="chatbar--content--name">{msg.user}</span>
                                 {msg.message}
                                 <span className="chatbar--content--time">
